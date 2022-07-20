@@ -1,7 +1,5 @@
 import os
-import numpy as np
 import pandas as pd
-import plotly.express as px
 import matplotlib.pyplot as plt
 from textwrap import wrap
 
@@ -12,9 +10,10 @@ from load import loadData, getQuestions, sampleData
 pd.options.display.max_colwidth = 255
 
 # get Data
-fp = sampleData()
-q_df = getQuestions(file=fp)
-d_df = loadData(file=fp)
+fps = sampleData()
+survey_fp = fps.pop(0)
+q_df = getQuestions(file=survey_fp)
+d_df = loadData(file=survey_fp)
 
 # split 
 coltype = "int"
@@ -66,7 +65,7 @@ for qid in qids:
     x = [gA,gB]
 
     groups = ["skilled","unskilled"]
-    labels = ['kA', '1 \n trifft nicht zu', '2', '3', '4', '5 \n trifft voll zu']
+    xlabels = ['kA', '1 \n trifft nicht zu', '2', '3', '4', '5 \n trifft voll zu']
     title = "Institut für Sphärische Konjugation"
     colors = ['blue', 'orange']#, 'lime']
 
@@ -79,9 +78,9 @@ for qid in qids:
         ax0.hist(x, bins=[-0.5,0.5,1.5,2.5,3.5,4.5,5.5], density=False, histtype='bar', color=colors, label=groups, width = 0.4)
         ax0.set_title("\n".join(wrap(f'{question}', 50)), fontsize=12)
     ax0.set_ylabel('Anzahl TN')
-
     ax0.legend(prop={'size': 10})
-    ax0.set_xticks([0,1,2,3,4,5], labels)
+
+    ax0.set_xticks([0,1,2,3,4,5], xlabels)
 
     fig.suptitle("\n".join(wrap(f'{str(qid)}', 50)), fontsize=16)
     fig.tight_layout()
