@@ -8,40 +8,26 @@ from sympy import false
 
 from load import loadData, getQuestions, sampleData
 
-fps = sampleData()
-fps.pop(0)
 
+def rectify(filepath):
+    edf = pd.read_excel(filepath)
 
-testdata = fps[0]
-table = pd.read_excel(testdata)
+    edf_head = edf.columns
+    q_len = len(edf_head)
 
-table_head = table.columns
-q_len = len(table_head)
-print(q_len)
-
-
-
-
-head = list(table_head)
-
-
-if __name__ == "__main__":
-    pd.options.display.max_colwidth = 255
+    head = list(edf_head)
     i = 0
     header = []
     questions = []
 
-    print(head)
+    # swap columns for last question
     tmp = head[len(head)-2]
     head[len(head)-2] = head[len(head)-1] 
     head[len(head)-1] = tmp
-    print(head)
-
-
 
     for row in head:
         i+=1
-        x= False
+        x = False
         if re.match('\A([0-9].[0-9])', row) == None: 
             num = None
             qu = None
@@ -49,22 +35,33 @@ if __name__ == "__main__":
              strlist = re.split('\A([0-9].[0-9])', row)
              num = strlist[1]
              qu = strlist[2].lstrip()
-
-        print(i, num, x)
+    
+        # make new table header
         header.append(num)
         questions.append(qu)
 
+    edf.columns = header
 
-    
-    table.columns = header
+    # construct questions dataframe
+    qdf = pd.DataFrame({"qid": header, "num": None, "frage": questions})
+    qdf = qdf[qdf["qid"].notnull()].reset_index()
 
-    df2 = pd.DataFrame({"qid": header, "frage": questions})
-    print(df2)
+    # this will overwrite existing files!!!
+    fn_out = filepath
+    edf.to_excel(fn_out, sheet_name="Eval")
+    with pd.ExcelWriter(fn_out, engine='openpyxl', mode='a') as writer:  
+        qdf.to_excel(writer, sheet_name='Fragen')
 
-    print(table.columns)
 
-    table.to_excel('data/foo.xlsx', sheet_name="Eval")
 
-    with pd.ExcelWriter('data/foo.xlsx', engine='openpyxl', mode='a') as writer:  
-        df2.to_excel(writer, sheet_name='Fragen')
-        
+if __name__ == "__main__":
+    # pd.options.display.max_colwidth = 255
+
+    fps = sampleData()
+    print(fps)
+    fps.pop(0)
+    print(fps)
+
+    for table in fps:
+        print(table)
+        rectify(table)
