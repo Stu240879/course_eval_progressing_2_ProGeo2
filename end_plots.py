@@ -11,6 +11,7 @@ pd.options.display.max_colwidth = 255
 
 # get Data
 fps = sampleData()
+# get first xlsx only
 survey_fp = fps.pop(0)
 q_df = getQuestions(file=survey_fp)
 d_df = loadData(file=survey_fp)

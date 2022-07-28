@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from textwrap import wrap
 import re
 
-from sympy import false
-
 from load import loadData, getQuestions, sampleData
 
 
@@ -41,27 +39,33 @@ def rectify(filepath):
         questions.append(qu)
 
     edf.columns = header
+    edf = edf.dropna(axis=1,how='all')
 
     # construct questions dataframe
-    qdf = pd.DataFrame({"qid": header, "num": None, "frage": questions})
+    qdf = pd.DataFrame({"qid": header, "num": None, "type": None, "frage": questions})
     qdf = qdf[qdf["qid"].notnull()].reset_index()
 
     # this will overwrite existing files!!!
     fn_out = filepath
-    edf.to_excel(fn_out, sheet_name="Eval")
+    edf.to_excel(fn_out, sheet_name="Eval", index=False)
     with pd.ExcelWriter(fn_out, engine='openpyxl', mode='a') as writer:  
         qdf.to_excel(writer, sheet_name='Fragen')
 
 
 
+def rectify_lessons(all=True, num:int=None):
+    if all == True:
+        fps = sampleData()
+        fps.pop(0)
+        for table in fps:
+            rectify(table)
+    elif num != None:
+        fps = sampleData()
+        rectify(fps[num])
+    else:
+        print("you done fucked up")
+
 if __name__ == "__main__":
     # pd.options.display.max_colwidth = 255
 
-    fps = sampleData()
-    print(fps)
-    fps.pop(0)
-    print(fps)
-
-    for table in fps:
-        print(table)
-        rectify(table)
+    rectify_lessons(all=True)
