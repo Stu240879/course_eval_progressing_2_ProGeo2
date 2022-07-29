@@ -20,7 +20,14 @@ shifted_cols = [9,10]
 
 
 def reverse_coldata(df, cols):
-    pass
+    ist = [1,2,3,4,5,6]
+    soll = [0, 6,5,4,3,2,1]
+    for col in cols:
+        d = df.iloc[:,col].astype(int).fillna(0).values.tolist()
+        r = [soll[n] for n in d]
+        df.iloc[:,col] = r
+    
+    print(df)
 
 def shift_coldata(df, cols):
     for col in cols:
@@ -43,7 +50,8 @@ d_df.drop(columns=d_df.columns[-1],
 
 
 foo = shift_coldata(d_df, shifted_cols)
-print(foo)
+foo_rev = reverse_coldata(d_df, reversed_cols)
+print(foo_rev)
 
 
 

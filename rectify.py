@@ -63,7 +63,7 @@ def rectify_lessons(all=True, num:int=None):
         fps = sampleData()
         rectify(fps[num])
     else:
-        print("you done fucked up")
+        print("you dun fucked up")
 
 if __name__ == "__main__":
     # pd.options.display.max_colwidth = 255
