@@ -19,13 +19,12 @@ def sampleData():
 
 def loadData(file = "", nrows=0):
     data = pd.read_excel(file, sheet_name="Eval")
-    colnames = data.iloc[0,:]
+    # colnames = data.iloc[0,:]
     # print(colnames)
     quest = data.iloc[1,:]
-    data = data[2::]
-    data.columns = colnames
+    # data = data[2::]
+    # data.columns = colnames
     data.reset_index(inplace=True, drop=True)
-    # print(data)
     # data.index = data.iloc[:,0].astype(int)
     
     # returns all except header
@@ -37,11 +36,9 @@ def getQuestions(file="",nrows=0):
 
 
 
-
-
 if __name__ == "__main__":
 
-    foo = sampleData()
+    foo = sampleData()[0]
     bar = loadData(file=foo)
-    baz = getQuestions(file=foo)
-    print(baz)
+    # baz = getQuestions(file=foo)
+    # print(baz)
