@@ -80,11 +80,11 @@ print(part_groups_bool_ebene)
 
 
 
-# this is no longer used
-qualstr = "1: sehr schlecht - 2: schlecht - 3: ok - 4: gut - 5: sehr gut - kA: keine Angabe"
-boolstr = "1: Ja - 2: Nein - kA: keine Angabe"
-timestr = "1:  - 2:  - kA: keine Angabe"
-# ===
+# # this is no longer used
+# qualstr = "1: sehr schlecht - 2: schlecht - 3: ok - 4: gut - 5: sehr gut - kA: keine Angabe"
+# boolstr = "1: Ja - 2: Nein - kA: keine Angabe"
+# timestr = "1:  - 2:  - kA: keine Angabe"
+# # ===
 
 
 ### make qual diagrams (NA, 1-5)
@@ -135,53 +135,49 @@ for qid in qids:
 
 ### make qual diagrams (Ja/Nein)
 
-qids_bool = list(part_groups_bool_skill[0].columns)
 
-for qid in qids_bool:
-
-    dirname = os.path.dirname(__file__)
-    fp_out = os.path.join(dirname, f'charts\chart_{qid}.png')
-    question = q_df[q_df["qid"] == qid]["frage"].to_string(index=False)
+def makeHist_YN_grouped(preppedDF:pd.DataFrame, group_descriptor:list=["keine angaben", "keine angaben"]):
     
-    print(f'generating: {fp_out} for question {qid}')
+    qids_bool = list(preppedDF[0].columns)
+    
+    for qid in qids_bool:
 
-    stacked = False
+        dirname = os.path.dirname(__file__)
+        fp_out = os.path.join(dirname, f'charts\chart_{qid}.png')
+        question = q_df[q_df["qid"] == qid]["frage"].to_string(index=False)
+        
+        print(f'generating: {fp_out} for question {qid}')
+        stacked = False
+        ### why did i have to switch this here?
+        gA = preppedDF[0][qid].tolist()
+        gB = preppedDF[1][qid].tolist()
 
-    ### why did i have to switch this here?
-    gA = part_groups_bool_skill[0][qid].tolist()
-    gB = part_groups_bool_skill[1][qid].tolist()
-
-    x = [gA,gB]
-
-    skill_groups = ['mit Vorkenntnissen','ohne Vorkenntnisse']
-    ebene_groups = ['Kommunalbedienstete', 'Landesbedienstete']
-    xlabels_bool = ['0 \nNein','1 \nJa', 'kA \nunentschlossen']
-
-    title = "Institut für Sphärische Konjugation"
-    colors = ['blue', 'orange']#, 'lime']
-
-    fig, ((ax0)) = plt.subplots()
-
-    if stacked == True:
-        ax0.hist(x, bins=[-0.5,0.5,1.5,2.5,3.5,4.5,5.5], density=False, histtype='bar', stacked=True,  color=colors, align='mid', label=skill_groups)
-        ax0.set_title('stacked')
-    else:
-        ax0.hist(x, bins=[-0.5,0.5,1.5,2.5], density=False, histtype='bar', color=colors, label=skill_groups, width = 0.4)
-        ax0.set_title("\n".join(wrap(f'{question}', 50)), fontsize=12)
-    ax0.set_ylabel('Anzahl TN')
-    ax0.legend(prop={'size': 10})
-
-    ax0.set_xticks([0,1,2], xlabels_bool)
-
-    fig.suptitle("\n".join(wrap(f'{str(qid)}', 50)), fontsize=16)
-    fig.tight_layout()
-    plt.savefig(fp_out)
-    plt.clf()
-    plt.cla()
-    plt.close()
+        x = [gA,gB]
 
 
 
+        group_description = ['mit Vorkenntnissen','ohne Vorkenntnisse']
+        skill_groups = group_descriptor
+        xlabels_bool = ['0 \nNein','1 \nJa', 'kA \nunentschlossen']
+        colors = ['blue', 'orange']#, 'lime']
+        fig, ((ax0)) = plt.subplots()
+        if stacked == True:
+            ax0.hist(x, bins=[-0.5,0.5,1.5,2.5,3.5,4.5,5.5], density=False, histtype='bar', stacked=True,  color=colors, align='mid', label=skill_groups)
+            ax0.set_title('stacked')
+        else:
+            ax0.hist(x, bins=[-0.5,0.5,1.5,2.5], density=False, histtype='bar', color=colors, label=skill_groups, width = 0.4)
+            ax0.set_title("\n".join(wrap(f'{question}', 50)), fontsize=12)
+        ax0.set_ylabel('Anzahl TN')
+        ax0.legend(prop={'size': 10})
+
+        ax0.set_xticks([0,1,2], xlabels_bool)
+
+        fig.suptitle("\n".join(wrap(f'{str(qid)}', 50)), fontsize=16)
+        fig.tight_layout()
+        plt.savefig(fp_out)
+        plt.clf()
+        plt.cla()
+        plt.close()
 
 
 for qid in ["1.1", "2.5"]:
@@ -225,3 +221,13 @@ for qid in ["1.1", "2.5"]:
     plt.clf()
     plt.cla()
     plt.close()
+
+
+
+if __name__ == "__main__":
+    
+    # prepareDataframes(filename)
+
+    makeHist_YN_grouped(part_groups_bool_skill)
+    makeHist_YN_grouped(part_groups_bool_ebene)
+
