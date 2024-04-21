@@ -129,8 +129,8 @@ env.bak/
 venv.bak/
 
 # data and output charts
-_stuff/*
-output/*
-data/original/*
-data/processed/*
+_stuff/
+output/
+data/raw/
+data/processed/
 
