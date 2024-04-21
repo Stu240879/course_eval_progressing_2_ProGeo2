@@ -128,5 +128,9 @@ ENV/
 env.bak/
 venv.bak/
 
-# charts
-charts/*.png
+# data and output charts
+charts/
+data/*
+*.xlsx
+*.docx
+*.png
