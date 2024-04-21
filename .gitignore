@@ -131,6 +131,6 @@ venv.bak/
 # data and output charts
 _stuff/
 output/
-data/raw/
-data/processed/
+data/raw/*
+data/processed/*
 
